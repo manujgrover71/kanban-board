@@ -14,7 +14,7 @@ function Card({ card, index, listId }) {
   }
   
   return (
-    <Draggable draggableId={card.id} index={index} >
+    <Draggable draggableId={card._id} index={index} >
       {(provided) => (
         <div
           ref={provided.innerRef}

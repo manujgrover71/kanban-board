@@ -5,37 +5,8 @@ const port = 5000;
 require("././config/dbconnect");
 app.use(express.json());
 
-let data = {
-  lists: {
-    "list-1": {
-      id: "list-1",
-      title: "Todo",
-      cards: [
-        {
-          id: "1",
-          title: "Learning how to code...",
-        },
-        {
-          id: "2",
-          title: "Second card content, just a little bigger.",
-        },
-        {
-          id: "3",
-          title: "This is just a normal size one.",
-        },
-      ],
-    },
-    "list-2": {
-      id: "list-2",
-      title: "Doing",
-      cards: [],
-    },
-  },
-  listIds: ["list-1", "list-2"],
-};
-
 app.options("*", function (request, response) {
-  // console.log("Sending the response of the post request");
+  console.log("Sending the response of the post request");
   response.setHeader("Access-Control-Allow-Origin", "*");
   response.setHeader("Access-Control-Allow-Headers", "*");
   response.setHeader("Access-Control-Allow-Methods", "*");
@@ -45,120 +16,92 @@ app.options("*", function (request, response) {
 app.get("/data", (req, res) => {
   console.log("Sending data");
   res.set("Access-Control-Allow-Origin", "*");
-  // dataModel.getData(req, function(error, result) {
-  //   if(error) console.log("Error while featching data");
-  //   else console.log("From get Data ", result);
-  // });
-  res.send(data);
+  dataModel.getData(req, function (error, result) {
+    if (error) console.log("Error while featching data");
+    else res.send(result);
+  });
 });
 
 app.post("/data", (req, res) => {
   res.set("Access-Control-Allow-Origin", "*");
-  // console.log(req.body);
-  
+  console.log(req.body);
+
   if (req.body.type === "addTitle") {
-    const newCard = {
-      id: req.body.id,
-      title: req.body.title,
-    };
-
-    const list = data.lists[req.body.listId];
-    list.cards = [...list.cards, newCard];
-
-    data = {
-      ...data,
-      lists: {
-        ...data.lists,
-        [req.body.listId]: list,
-      },
-    };
-    
-    dataModel.insertData(data, function (error, result) {
-      if(error) console.log("Error while inserting data ", error);
-      else console.log("Result received from insertData ", result);
-    });
-    
+    dataModel.addCard(
+      { id: req.body.listId, title: req.body.title },
+      function (error, result) {
+        if (error) console.log("Error while adding card in db", error);
+        else {
+          res.send(result);
+        }
+      }
+    );
   } else if (req.body.type === "addList") {
-    data = {
-      ...data,
-      lists: {
-        ...data.lists,
-        [req.body.list.id]: req.body.list,
-      },
-      listIds: [...data.listIds, req.body.list.id],
-    };
+    dataModel.addList({ title: req.body.title }, function (error, result) {
+      if (error) console.log("Error while adding a list");
+      else {
+        res.send(result);
+      }
+    });
   } else if (req.body.type === "updateList") {
-    data = {
-      ...data,
-      lists: {
-        ...data.lists,
-        [req.body.list.id]: req.body.list,
-      },
-    };
-  } else if(req.body.type === 'onDragEnd') {
-    
-    const { destination, source, draggableId } = req.body;
-    const sourceList = data.lists[source.droppableId];
-    const destinationList = data.lists[destination.droppableId];
-    const draggingCard = sourceList.cards.filter(
-      (card) => card.id === draggableId
-    )[0];
+    dataModel.updateListTitle(
+      { id: req.body.listId, listTitle: req.body.listTitle },
+      function (error, result) {
+        if (error) console.log("Error while updating list title");
+        else {
+          console.log("Updated list result ", result);
+          res.send(result);
+        }
+      }
+    );
+  } else if (req.body.type === "onDragEnd") {
+    const { destination, source, draggableId, cardTitle } = req.body;
 
-    if (source.droppableId === destination.droppableId) {
-      sourceList.cards.splice(source.index, 1);
-      sourceList.cards.splice(destination.index, 0, draggingCard);
+    console.log("Source List: ", source);
 
-      data = {
-        ...data,
-        lists: {
-          ...data.lists,
-          [sourceList.id]: sourceList,
-        },
-      };
-
-    } else {
-      sourceList.cards.splice(source.index, 1);
-      destinationList.cards.splice(destination.index, 0, draggingCard);
-
-      data = {
-        ...data,
-        lists: {
-          ...data.lists,
-          [sourceList.id]: sourceList,
-          [destinationList.id]: destinationList,
-        },
-      };
-    } 
+    dataModel.deleteCard(
+      { cardId: draggableId, listId: source.droppableId },
+      function (error, result) {
+        if (error) console.log("Error while deleting from list");
+        else {
+          dataModel.addCardAtPosition(
+            {
+              listId: destination.droppableId,
+              index: destination.index,
+              cardTitle,
+            },
+            function (error1, result1) {
+              if (error1) console.log("Error while adding into position");
+              else res.send(result1);
+            }
+          );
+        }
+      }
+    );
   }
-
-  // console.log("changed data from server ", data);
-  res.send(data);
 });
 
 app.delete("/data", (req, res) => {
   res.set("Access-Control-Allow-Origin", "*");
-  // console.log("Delete is called with data: ", req.body);
-  
-  let cards = data.lists[req.body.listId].cards;
-  cards = cards.filter((card) => card.id !== req.body.cardId);
-  console.log(cards)
-  
-  data = {
-    ...data, 
-    lists: {
-      ...data.lists,
-      [req.body.listId]: {
-        ...data.lists[req.body.listId],
-        cards: cards
+  console.log("Delete is called with data: ", req.body);
+
+  if (req.body.type == "deleteCard") {
+    dataModel.deleteCard(
+      { cardId: req.body.cardId, listId: req.body.listId },
+      function (error, result) {
+        if (error) console.log("Error in deleting");
+        else res.send(result);
       }
-    }
-  };
-  
-  res.send(data);
+    );
+  } else {
+    dataModel.deleteList({ listId: req.body.listId }, function (error, result) {
+      if (error) console.log("Error in deleting");
+      else res.send(result);
+    });
+  }
 });
 
 app.get("/", (req, res) => {
-  // console.log(req);
   res.send("Root Path");
 });
 

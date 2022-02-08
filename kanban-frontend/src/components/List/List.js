@@ -4,7 +4,7 @@ import Title from "./Title";
 import Card from "../../Card";
 import InputContainer from "../input/InputContainer";
 import { Droppable } from "react-beautiful-dnd";
-function List({ list }) {
+function List({ list, key }) {
   return (
     <div>
       <Paper
@@ -16,20 +16,20 @@ function List({ list }) {
         }}
       >
         <CssBaseline />
-        <Title title={list.title} listId={list.id} />
-        <Droppable droppableId={list.id}>
+        <Title title={list.title} listId={list._id} />
+        <Droppable droppableId={list._id}>
           {(provided) => (
             <div ref={provided.innerRef} {...provided.droppableProps}>
               {list.cards
                 ? list.cards.map((card, idx) => (
-                    <Card key={card.id} card={card} listId={list.id} index={idx} />
+                    <Card key={card.id} card={card} listId={list._id} index={idx} />
                   ))
                 : ""}
               {provided.placeholder}
             </div>
           )}
         </Droppable>
-          <InputContainer listId={list.id} type="card" />
+          <InputContainer listId={list._id} type="card" />
       </Paper>
     </div>
   );

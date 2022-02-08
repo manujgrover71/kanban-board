@@ -21,13 +21,12 @@ function App() {
         setData(data);
         console.log(data);
       })
-      .catch((error) =>  {
+      .catch((error) => {
         console.log(error);
       });
   };
 
   const postRequest = (details) => {
-    
     fetch("http://localhost:5000/data", {
       method: "POST",
       headers: {
@@ -42,23 +41,23 @@ function App() {
         return response.json();
       })
       .then((data) => {
-        console.log("Returned Data is ", data);
+        // console.log("Returned Data is ", data);
         fetchData();
       })
       .catch((error) => {
         console.log(`Error while ${details.type} `, error);
       });
-      
   };
-  
+
   const deleteCard = (card, listId) => {
-    console.log(card, listId);
-    
+    console.log("This is card: ", card);
+
     const details = {
-      cardId: card.id,
-      listId
+      cardId: card._id,
+      listId,
+      type: "deleteCard",
     };
-    
+
     fetch("http://localhost:5000/data", {
       method: "DELETE",
       headers: {
@@ -76,8 +75,7 @@ function App() {
       .catch((error) => {
         console.log(`Error while ${details.type} `, error);
       });
-      
-  }
+  };
 
   const addMoreCard = (title, listId) => {
     console.log("From app.js: ");
@@ -95,11 +93,9 @@ function App() {
 
   const addMoreList = (title) => {
     let details = {
-      list: {
-        id: uuid(),
-        title,
-        cards: [],
-      },
+      id: uuid(),
+      title,
+      cards: [],
       type: "addList",
     };
 
@@ -107,38 +103,68 @@ function App() {
   };
 
   const updateListTitle = (title, listId) => {
-    const list = data.lists[listId];
-    list.title = title;
-    
     const details = {
-      list,
-      type: 'updateList'
-    }
+      listId,
+      listTitle: title,
+      type: "updateList",
+    };
 
     postRequest(details);
   };
 
-  function onDragEnd(result) {
+  const onDragEnd = (result) => {
     if (!result.destination) return;
 
+    const cardTitle = data
+      .filter((list) => list._id === result.source.droppableId)[0]
+      .cards.filter((card) => card._id === result.draggableId)[0]["title"];
+    console.log(cardTitle);
+
     const details = {
-      type: 'onDragEnd',
+      type: "onDragEnd",
       destination: result.destination,
       source: result.source,
-      draggableId: result.draggableId
+      draggableId: result.draggableId,
+      cardTitle,
     };
-    
+
     postRequest(details);
-  }
+  };
+
+  const dropList = (listId) => {
+    const details = {
+      listId,
+      type: "dropList",
+    };
+
+    fetch("http://localhost:5000/data", {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(details),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        fetchData();
+        console.log("Returned Data is ", data);
+      })
+      .catch((error) => {
+        console.log(`Error while ${details.type} `, error);
+      });
+  };
 
   return (
-    <StoreApi.Provider value={{ addMoreCard, addMoreList, updateListTitle, deleteCard }}>
+    <StoreApi.Provider
+      value={{ addMoreCard, addMoreList, updateListTitle, deleteCard, dropList }}
+    >
       <DragDropContext onDragEnd={onDragEnd}>
         <Wrapper>
           {data
-            ? data.listIds.map((listId) => {
-                const list = data.lists[listId];
-                return <List list={list} key={listId} />;
+            ? Object.entries(data).map((list) => {
+                return <List list={list[1]} key={list[1].id} />;
               })
             : ""}
           <InputContainer type="list" />

@@ -1,8 +1,8 @@
-import { InputBase, Typography } from "@mui/material";
+import { IconButton, InputBase, Typography } from "@mui/material";
 import React, { useState, useContext } from "react";
 import styled from "@mui/styled-engine";
 import { makeStyles } from "@mui/styles";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import storeAPI from "../../utils/storeAPI";
 
 const useStyle = makeStyles(() => ({
@@ -19,7 +19,7 @@ const useStyle = makeStyles(() => ({
 function Title({ title, listId }) {
   const [open, setOpen] = useState(false);
   const classes = useStyle();
-  const { updateListTitle } = useContext(storeAPI);
+  const { updateListTitle, dropList } = useContext(storeAPI);
   const [newTitle, setNewTitle] = useState(title);
   function handleOnChange(e) {
     setNewTitle(e.target.value);
@@ -29,11 +29,16 @@ function Title({ title, listId }) {
     updateListTitle(newTitle, listId);
     setOpen(false);
   }
+  
+  function handleListDelete() {
+    console.log("Delete List");
+    dropList(listId);
+  }
 
   return (
     <div>
       {open ? (
-        <div>
+        <InputBaseWrapper>
           <InputBase
             autoFocus
             onChange={handleOnChange}
@@ -41,17 +46,18 @@ function Title({ title, listId }) {
             inputProps={{
               className: classes.input,
             }}
-            fullWidth
             onBlur={handleOnBlur}
           />
-        </div>
+          <IconButton onMouseDown={handleListDelete}>
+            <HighlightOffIcon />
+          </IconButton>
+        </InputBaseWrapper>
       ) : (
-        <IdleTitelWrapper>
+        <IdleTitleWrapper>
           <IdleTitle onClick={() => setOpen(!open)}>
             {title}
           </IdleTitle>
-          <MoreHorizIcon />
-        </IdleTitelWrapper>
+        </IdleTitleWrapper>
       )}
     </div>
   );
@@ -64,8 +70,13 @@ const IdleTitle = styled("div")`
   margin-top: 8px;
 `;
 
-const IdleTitelWrapper = styled('div')`
+const InputBaseWrapper = styled('div')`
   display: flex;
+`;
+
+const IdleTitleWrapper = styled('div')`
+  display: flex;
+  align-items: center;
   margin-left: 8px;
 `
 
