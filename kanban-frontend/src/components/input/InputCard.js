@@ -2,25 +2,25 @@ import React, { useState, useContext } from "react";
 import { Button, IconButton, InputBase, Paper } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import styled from "@mui/styled-engine";
-import storeAPI from "../../utils/storeAPI";
+import { StoreAPI } from "../../utils/storeAPI";
 
 function InputCard({ setOpen, listId, type }) {
   const [title, setTitle] = useState("");
-  const { addMoreCard, addMoreList } = useContext(storeAPI);
+  const { addCard, addList } = useContext(StoreAPI);
 
   function handleChange(e) {
     setTitle(e.target.value);
   }
 
   function handleBtnConfirm() {
-    if (type == "card") {
-      addMoreCard(title, listId);
+    if (type === "card") {
+      addCard(title, listId);
       setOpen(false);
       setTitle("");
     } else {
       setOpen(false);
       setTitle("");
-      addMoreList(title);
+      addList(title);
     }
   }
 

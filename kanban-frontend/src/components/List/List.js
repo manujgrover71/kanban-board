@@ -1,5 +1,5 @@
 import React from "react";
-import { CssBaseline, Paper, Typography } from "@mui/material";
+import { CssBaseline, Paper } from "@mui/material";
 import Title from "./Title";
 import Card from "../../Card";
 import InputContainer from "../input/InputContainer";

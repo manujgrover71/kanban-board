@@ -1,9 +1,9 @@
-import { IconButton, InputBase, Typography } from "@mui/material";
+import { IconButton, InputBase } from "@mui/material";
 import React, { useState, useContext } from "react";
 import styled from "@mui/styled-engine";
 import { makeStyles } from "@mui/styles";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import storeAPI from "../../utils/storeAPI";
+import { StoreAPI } from "../../utils/storeAPI";
 
 const useStyle = makeStyles(() => ({
   input: {
@@ -19,20 +19,19 @@ const useStyle = makeStyles(() => ({
 function Title({ title, listId }) {
   const [open, setOpen] = useState(false);
   const classes = useStyle();
-  const { updateListTitle, dropList } = useContext(storeAPI);
+  const { updateListTitle, deleteList } = useContext(StoreAPI);
   const [newTitle, setNewTitle] = useState(title);
   function handleOnChange(e) {
     setNewTitle(e.target.value);
   }
 
   function handleOnBlur() {
-    updateListTitle(newTitle, listId);
+    updateListTitle(listId, newTitle);
     setOpen(false);
   }
   
   function handleListDelete() {
-    console.log("Delete List");
-    dropList(listId);
+    deleteList(listId);
   }
 
   return (

@@ -1,6 +1,13 @@
 const mongoose = require("mongoose");
 
-mongoose.connect("mongodb://localhost:27017/test", (err, success) => {
-    if(err) console.log("error connection to db", err);
-    else console.log("success connecting to db");
-});
+const connectDB = async() => {
+    try {
+        const conn = await mongoose.connect(process.env.MONGO_URI);
+        
+        console.log(`Mongo DB Connected on port: ${conn.connection.host}`.cyan.underline.bold);
+    } catch (err) {
+        console.log(`Error: ${err.message}`.red);
+    }
+}
+
+module.exports = connectDB;
