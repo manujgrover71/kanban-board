@@ -4,9 +4,12 @@ const { ListModel, CardModel } = require("../models/DataModel");
 // @route  GET /api/v1/data
 // @access Public
 async function getData(req, res, next) {
+  
+  const user_id = req.user.id;
+  
   try {
-    const data = await ListModel.find();
-
+    const data = await ListModel.find({ user_id: user_id });
+    
     return res.status(200).json({
       success: true,
       count: data.length,
@@ -98,10 +101,11 @@ async function deleteList(req, res, next) {
 // @route  POST /api/v1/list
 // @access Public
 async function addList(req, res, next) {
+  const user_id = req.user.id;
   const { title } = req.body;
 
   try {
-    const result = await ListModel.insertMany([{ title: title }]);
+    const result = await ListModel.insertMany([{ user_id: user_id, title: title }]);
 
     return res.status(200).json({
       success: true,
@@ -120,8 +124,6 @@ async function addList(req, res, next) {
 // @access Public
 async function deleteCard(req, res, next) {
   const { cardId, listId } = req.body;
-
-  console.log("IN DELETE CARD", req);
 
   try {
     const result = await ListModel.find({ _id: listId }).updateOne({

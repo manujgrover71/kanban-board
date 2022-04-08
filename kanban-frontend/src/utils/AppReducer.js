@@ -1,6 +1,14 @@
 // eslint-disable-next-line
 export default (state, action) => {
   switch (action.type) {
+    case "SET_USER":
+      return {
+        ...state,
+        user: action.payload.user_id,
+        token_id: action.payload.token_id,
+        loading: false,
+      };
+
     case "GET_DATA":
       return {
         ...state,
@@ -86,16 +94,18 @@ export default (state, action) => {
             (card) => card._id !== action.payload.cardId
           );
         }
-        
-        if(list._id === action.payload.destinationListId) {
-            list.cards.splice(action.payload.cardPosition, 0, action.payload.card)
+
+        if (list._id === action.payload.destinationListId) {
+          list.cards.splice(
+            action.payload.cardPosition,
+            0,
+            action.payload.card
+          );
         }
-        
+
         return list;
       });
-      
-      console.log("Changed List", lists);
-      
+
       return {
         ...state,
         data: [...lists],

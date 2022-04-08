@@ -7,6 +7,7 @@ const CardSchema = new mongoose.Schema({
 });
 
 const ListSchema = new mongoose.Schema({
+  user_id: { type: String },
   title: { type: String },
   cards: [CardSchema],
 });

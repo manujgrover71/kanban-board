@@ -4,6 +4,8 @@ import axios from "axios";
 
 let initialState = {
   data: [],
+  user: null,
+  token_id: null,
   error: null,
   isLoading: true,
 };
@@ -13,9 +15,90 @@ const StoreAPI = createContext(initialState);
 const StoreProvider = ({ children }) => {
   const [state, dispatch] = useReducer(AppReducer, initialState);
 
+  function setUser(token_id, user_id) {
+    dispatch({
+      type: "SET_USER",
+      payload: { user_id, token_id },
+    });
+  }
+
+  async function loginUser(email, password) {
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+
+      const data = {
+        email,
+        password,
+      };
+
+      const res = await axios.post(
+        "http://localhost:5000/api/v1/users/login",
+        data,
+        config
+      );
+
+      localStorage.setItem(
+        "JWT_TOKEN",
+        JSON.stringify({ user_id: res.data._id, token_id: res.data.token_id })
+      );
+      dispatch({
+        type: "SET_USER",
+        payload: { user_id: res.data._id, token_id: res.data.token_id },
+      });
+    } catch (err) {
+      //! TODO: Update error!
+      dispatch({ type: "FETCH_ERROR", payload: err.response.data.error });
+    }
+  }
+
+  async function registerUser(name, email, password) {
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+
+      const data = {
+        name,
+        email,
+        password,
+      };
+
+      const res = await axios.post(
+        "http://localhost:5000/api/v1/users/register",
+        data,
+        config
+      );
+
+      localStorage.setItem(
+        "JWT_TOKEN",
+        JSON.stringify({ user_id: res.data._id, token_id: res.data.token_id })
+      );
+      dispatch({
+        type: "SET_USER",
+        payload: { user_id: res.data._id, token_id: res.data.token_id },
+      });
+    } catch (err) {
+      //! TODO: Update error!
+      dispatch({ type: "FETCH_ERROR", payload: err.response.data.error });
+    }
+  }
+
   async function getData() {
     try {
-      const res = await axios.get("http://localhost:5000/api/v1/");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${state.token_id}`,
+        },
+      };
+
+      const res = await axios.get("http://localhost:5000/api/v1/", config);
+
       dispatch({ type: "GET_DATA", payload: res.data.data });
     } catch (err) {
       dispatch({ type: "FETCH_ERROR", payload: err.response.data.error });
@@ -27,6 +110,7 @@ const StoreProvider = ({ children }) => {
       const config = {
         headers: {
           "Content-type": "application/json",
+          Authorization: `Bearer ${state.token_id}`,
         },
       };
 
@@ -58,11 +142,13 @@ const StoreProvider = ({ children }) => {
       const config = {
         headers: {
           "Content-type": "application/json",
+          Authorization: `Bearer ${state.token_id}`,
         },
       };
 
       const data = {
         title: title,
+        user_id: state.user,
       };
 
       const res = await axios.post(
@@ -88,6 +174,7 @@ const StoreProvider = ({ children }) => {
       const config = {
         headers: {
           "Content-type": "application/json",
+          Authorization: `Bearer ${state.token_id}`,
         },
       };
 
@@ -110,7 +197,13 @@ const StoreProvider = ({ children }) => {
 
   async function deleteList(listId) {
     try {
-      await axios.delete(`http://localhost:5000/api/v1/list/${listId}`);
+      const config = {
+        headers: {
+          Authorization: `Bearer ${state.token_id}`,
+        },
+      };
+
+      await axios.delete(`http://localhost:5000/api/v1/list/${listId}`, config);
 
       dispatch({ type: "DELETE_LIST", payload: listId });
     } catch (err) {
@@ -123,6 +216,7 @@ const StoreProvider = ({ children }) => {
       const config = {
         headers: {
           "Content-type": "application/json",
+          Authorization: `Bearer ${state.token_id}`,
         },
         data: {
           cardId: cardId,
@@ -130,7 +224,7 @@ const StoreProvider = ({ children }) => {
         },
       };
 
-      await axios.delete("http://localhost:5000/api/v1/card", config);
+      await axios.delete("http://localho  st:5000/api/v1/card", config);
 
       dispatch({ type: "DELETE_CARD", payload: { cardId, listId } });
     } catch (err) {
@@ -148,6 +242,7 @@ const StoreProvider = ({ children }) => {
       const config = {
         headers: {
           "Content-type": "application/json",
+          Authorization: `Bearer ${state.token_id}`,
         },
         data: {
           cardId: draggableId,
@@ -160,6 +255,7 @@ const StoreProvider = ({ children }) => {
       const config1 = {
         headers: {
           "Content-type": "application/json",
+          Authorization: `Bearer ${state.token_id}`,
         },
       };
 
@@ -200,6 +296,10 @@ const StoreProvider = ({ children }) => {
         data: state.data,
         error: state.error,
         loading: state.loading,
+        user: state.user,
+        token_id: state.token_id,
+        loginUser,
+        registerUser,
         getData,
         addCard,
         addList,
@@ -207,6 +307,7 @@ const StoreProvider = ({ children }) => {
         deleteList,
         deleteCard,
         updateCardPosition,
+        setUser
       }}
     >
       {children}
