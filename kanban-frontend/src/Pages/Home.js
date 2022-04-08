@@ -1,22 +1,17 @@
 import React, { useContext, useEffect } from "react";
 import List from "../components/List/List";
 import { StoreAPI } from "../utils/storeAPI";
+import { AuthAPI } from "../utils/authAPI";
 import styled from "@mui/styled-engine";
 import InputContainer from "../components/input/InputContainer";
 import Navbar from "../components/Navbar/Navbar";
 import { DragDropContext } from "react-beautiful-dnd";
-import { useNavigate } from "react-router-dom";
 
 function Home() {
-  const navigate = useNavigate();
-  const { data, user, getData, updateCardPosition, setUser } = useContext(StoreAPI);
-
+  const { data, getData, updateCardPosition } = useContext(StoreAPI);
+  const { user } = useContext(AuthAPI);
+  
   useEffect(() => {
-    
-    if(!user) {
-      navigate('/login');
-    }
-    
     getData();
     // eslint-disable-next-line
   }, [user]); 

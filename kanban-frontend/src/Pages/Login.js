@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef } from "react";
 import styled from "@mui/styled-engine";
 import { Button, Paper, TextField } from "@mui/material";
-import { StoreAPI } from "../utils/storeAPI";
+import { AuthAPI } from '../utils/authAPI';
 import { useNavigate } from "react-router-dom";
 
 function Login() {
@@ -9,17 +9,12 @@ function Login() {
   const email = useRef();
   const password = useRef();
   let navigate = useNavigate();
-  const { user, loginUser, setUser } = useContext(StoreAPI);
+  const { user, loginUser } = useContext(AuthAPI);
   
   useEffect(() => {
     
     if(user) {
       navigate('/');
-    }
-    
-    const saved = JSON.parse(localStorage.getItem('JWT_TOKEN'));
-    if(saved) {
-      setUser(saved.token_id, saved.user_id);
     }
     
   }, [user]);

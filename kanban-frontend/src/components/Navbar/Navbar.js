@@ -4,14 +4,15 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import styled from "@mui/styled-engine";
 import { Link } from "react-router-dom";
 import { StoreAPI } from "../../utils/storeAPI";
+import { AuthAPI } from "../../utils/authAPI";
 
 function Navbar() {
   
-  const { user } = useContext(StoreAPI);
+  const { user, signOut } = useContext(AuthAPI);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleLogOut = () => {
-    localStorage.removeItem('JWT_TOKEN');
+    signOut();
   }
   
   const handleMenu = (event) => {

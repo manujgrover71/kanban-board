@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useRef } from "react";
 import styled from "@mui/styled-engine";
 import { Button, Paper, TextField } from "@mui/material";
-import { StoreAPI } from "../utils/storeAPI";
 import { useNavigate } from "react-router-dom";
+import { AuthAPI } from "../utils/authAPI";
 
 function Register() {
   const name = useRef();
   const email = useRef();
   const password = useRef();
   const navigate = useNavigate();
-  const { user, registerUser } = useContext(StoreAPI);
+  const { user, registerUser } = useContext(AuthAPI);
 
   useEffect(() => {
     if (user) navigate("/");
