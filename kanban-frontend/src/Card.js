@@ -28,7 +28,7 @@ function Card({ card, index, listId }) {
             {card.title}
             {open ? (
               <IconButton onClick={handleDelete}>
-                <DeleteIcon />
+                <DeleteIcon style={{ color: '#D3D3D3' }} />
               </IconButton>
             ) : (
               ""
@@ -44,7 +44,10 @@ const PaperWrapper = styled(Paper)`
   padding: 8px;
   display: flex;
   justify-content: space-between;
+  color: #d3d3d3;
+  font-family: 'Open Sans';
   align-items: center;
+  background-color: #212121;
   margin: 8px;
 `;
 export default Card;

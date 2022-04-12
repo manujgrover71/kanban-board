@@ -13,6 +13,9 @@ function InputCard({ setOpen, listId, type }) {
   }
 
   function handleBtnConfirm() {
+    if(title === "")
+      return;
+    
     if (type === "card") {
       addCard(title, listId);
       setOpen(false);
@@ -48,7 +51,7 @@ function InputCard({ setOpen, listId, type }) {
           {type === "card" ? "Add Card" : "Add List"}
         </BtnWrapper>
         <IconButton onClick={() => setOpen(false)}>
-          <ClearIcon />
+          <ClearIcon style={{ color: 'white' }} />
         </IconButton>
       </div>
     </div>
@@ -64,8 +67,9 @@ const PaperWrapper = styled(Paper)`
 const BtnWrapper = styled(Button)`
   background: #5aac44;
   color: white;
+  background-color: #212121;
   :hover {
-    background: rgb(90, 172, 68, 0.75);
+    background: #313133;
   }
 `;
 

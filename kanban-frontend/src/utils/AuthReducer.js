@@ -6,10 +6,15 @@ export default (state, action) => {
         user: action.payload.user_id,
         token_id: action.payload.token_id,
         loading: false,
+        error: ""
       };
 
     case "SIGNOUT_USER": {
-      return { user: null, token_id: null, loading: false };
+      return { user: null, token_id: null, loading: false, error: "" };
+    }
+    
+    case "FETCH_ERROR": {
+      return { ...state, error: action.payload };
     }
 
     default:

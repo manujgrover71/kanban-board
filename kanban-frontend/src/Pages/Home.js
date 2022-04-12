@@ -10,11 +10,11 @@ import { DragDropContext } from "react-beautiful-dnd";
 function Home() {
   const { data, getData, updateCardPosition } = useContext(StoreAPI);
   const { user } = useContext(AuthAPI);
-  
+
   useEffect(() => {
     getData();
     // eslint-disable-next-line
-  }, [user]); 
+  }, [user]);
 
   const onDragEnd = (result) => {
     if (!result.destination) return;
@@ -26,7 +26,7 @@ function Home() {
       destination: result.destination,
       source: result.source,
       draggableId: result.draggableId,
-      cardTitle
+      cardTitle,
     };
 
     updateCardPosition(details);
@@ -52,7 +52,7 @@ function Home() {
 const Wrapper = styled("div")`
   display: flex;
   min-height: calc((100vh) - 47px);
-  background: green;
+  background: rgb(33, 33, 33);
   width: 100%;
   overflow-y: auto;
 `;

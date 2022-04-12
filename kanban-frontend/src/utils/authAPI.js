@@ -6,8 +6,16 @@ const initialState = {
   user: null,
   token_id: null,
   loading: true,
+  error: "",
 };
 
+const parseJwt = (token) => {
+  try {
+    return JSON.parse(atob(token.split(".")[1]));
+  } catch (e) {
+    return null;
+  }
+};
 const AuthAPI = createContext(initialState);
 
 const AuthProvider = ({ children }) => {
@@ -17,12 +25,16 @@ const AuthProvider = ({ children }) => {
     const saved = JSON.parse(localStorage.getItem("JWT_TOKEN"));
 
     if (saved) {
-      dispatch({
-        type: "SET_USER",
-        payload: { user_id: saved.user_id, token_id: saved.token_id },
-      });
+      const expireTime = parseJwt(saved?.token_id);
+      if (expireTime && expireTime.exp * 1000 < Date.now()) {
+        signOut();
+      } else {
+        dispatch({
+          type: "SET_USER",
+          payload: { user_id: saved.user_id, token_id: saved.token_id },
+        });
+      }
     }
-    
   }, []);
 
   async function loginUser(email, password) {
@@ -48,15 +60,13 @@ const AuthProvider = ({ children }) => {
         "JWT_TOKEN",
         JSON.stringify({ user_id: res.data._id, token_id: res.data.token_id })
       );
-      
+
       dispatch({
         type: "SET_USER",
         payload: { user_id: res.data._id, token_id: res.data.token_id },
       });
-      
     } catch (err) {
-      //! TODO: Update error!
-    //   dispatch({ type: "FETCH_ERROR", payload: err.response.data.error });
+        dispatch({ type: "FETCH_ERROR", payload: err.response.data.message });
     }
   }
 
@@ -84,18 +94,18 @@ const AuthProvider = ({ children }) => {
         "JWT_TOKEN",
         JSON.stringify({ user_id: res.data._id, token_id: res.data.token_id })
       );
+      
       dispatch({
         type: "SET_USER",
         payload: { user_id: res.data._id, token_id: res.data.token_id },
       });
     } catch (err) {
-      //! TODO: Update error!
-    //   dispatch({ type: "FETCH_ERROR", payload: err.response.data.error });
+        dispatch({ type: "FETCH_ERROR", payload: err.response.data.message });
     }
   }
-  
+
   async function signOut() {
-    localStorage.removeItem('JWT_TOKEN');
+    localStorage.removeItem("JWT_TOKEN");
     dispatch({ type: "SIGNOUT_USER" });
   }
 
@@ -105,9 +115,10 @@ const AuthProvider = ({ children }) => {
         user: state.user,
         token_id: state.token_id,
         loading: state.loading,
+        error: state.error,
         loginUser,
         registerUser,
-        signOut
+        signOut,
       }}
     >
       {children}

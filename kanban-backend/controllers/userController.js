@@ -21,7 +21,7 @@ async function registerUser(req, res) {
 
     return res.status(200).json({ success: true, token_id: generateToken(user._id), _id: user._id, name, email });
   } catch (err) {
-    return res.status(400).json({ success: false, message: "Error occured" });
+    return res.status(400).json({ success: false, message: "Error in Registering - Please try after some time" });
   }
 }
 
@@ -37,9 +37,9 @@ async function loginUser(req, res) {
 
     return res
       .status(400)
-      .json({ success: false, message: "Invalid User or Password" });
+      .json({ success: false, message: "Invalid Email or Password" });
   } catch (err) {
-    return res.status(400).json({ success: false, message: "Error occured" });
+    return res.status(400).json({ success: false, message: "Error in Loggin In - Please try after some time" });
   }
 }
 

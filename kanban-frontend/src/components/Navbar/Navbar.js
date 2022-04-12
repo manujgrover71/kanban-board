@@ -27,7 +27,7 @@ function Navbar() {
     <AppBar
       position="static"
       style={{
-        backgroundColor: "lightgreen",
+        backgroundColor: "#383838",
         minHeight: "47px",
         justifyContent: "center",
       }}
@@ -42,7 +42,7 @@ function Navbar() {
               onClick={handleMenu}
               aria-haspopup="true"
             >
-              <AccountCircle />
+              <AccountCircle style={{ color: 'white'}} />
             </IconButton>
             <Menu
               id="menu-appbar"
@@ -62,13 +62,6 @@ function Navbar() {
               <MenuItem onClick={handleLogOut}>Logout</MenuItem>
             </Menu>
           </>
-        )}
-        {!user && (
-          <Link to="/login">
-            <Button style={{ color: "white", backgroundColor: "green" }}>
-              Login
-            </Button>
-          </Link>
         )}
       </Wrapper>
     </AppBar>

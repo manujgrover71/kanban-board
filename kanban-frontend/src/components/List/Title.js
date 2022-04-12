@@ -26,6 +26,12 @@ function Title({ title, listId }) {
   }
 
   function handleOnBlur() {
+    
+    if(newTitle === "") {
+      setNewTitle("List");
+      return;
+    }
+    
     updateListTitle(listId, newTitle);
     setOpen(false);
   }
@@ -64,9 +70,12 @@ function Title({ title, listId }) {
 
 const IdleTitle = styled("div")`
   flex-grow: 1;
-  font-size: 1.2rem;
+  font-size: 1.0rem;
+  color: #dcdcdc;
+  font-family: 'Heebo';
   font-weight: bold;
   margin-top: 8px;
+  margin-left: 3px;
 `;
 
 const InputBaseWrapper = styled('div')`

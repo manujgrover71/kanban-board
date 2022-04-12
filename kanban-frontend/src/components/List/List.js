@@ -9,7 +9,7 @@ function List({ list, key }) {
     <div>
       <Paper
         style={{
-          backgroundColor: "#EBECF0",
+          backgroundColor: "#383838",
           width: "300px",
           marginLeft: "16px",
           marginTop: "16px",

@@ -36,6 +36,7 @@ const PaperWrapper = styled(Paper)`
   background: #ebecf0;
   :hover {
     background-color: rgb(0, 0, 0, 0.25);
+    color: white;
   }
 `;
 
