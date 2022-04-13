@@ -16,6 +16,7 @@ function Register() {
 
   useEffect(() => {
     if (user) navigate("/");
+    // eslint-disable-next-line
   }, [user]);
 
   const validateEmail = (email) => {

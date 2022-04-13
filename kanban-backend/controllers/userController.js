@@ -1,6 +1,9 @@
 const { User } = require("../models/UserModel");
 const { generateToken } = require("../utils/generateToken");
 
+// @desc   Register User
+// @route  POST /api/v1/users/register
+// @access Public
 async function registerUser(req, res) {
   const { name, email, password } = req.body;
 
@@ -25,6 +28,9 @@ async function registerUser(req, res) {
   }
 }
 
+// @desc   Login User
+// @route  POST /api/v1/users/login
+// @access Public
 async function loginUser(req, res) {
   const { email, password } = req.body;
 

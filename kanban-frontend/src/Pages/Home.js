@@ -39,7 +39,7 @@ function Home() {
         <Wrapper>
           {data
             ? Object.entries(data).map((list) => {
-                return <List list={list[1]} key={list[1].id} />;
+                return <List list={list[1]} key={list[1]['_id']} />;
               })
             : ""}
           <InputContainer type="list" />

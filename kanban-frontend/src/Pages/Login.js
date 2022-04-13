@@ -14,6 +14,7 @@ function Login() {
     if (user) {
       navigate("/");
     }
+    // eslint-disable-next-line
   }, [user]);
 
   const handleSubmit = (e) => {

@@ -1,9 +1,7 @@
 import React, { useContext, useState } from "react";
-import { AppBar, Button, IconButton, Menu, MenuItem } from "@mui/material";
+import { AppBar, IconButton, Menu, MenuItem } from "@mui/material";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import styled from "@mui/styled-engine";
-import { Link } from "react-router-dom";
-import { StoreAPI } from "../../utils/storeAPI";
 import { AuthAPI } from "../../utils/authAPI";
 
 function Navbar() {

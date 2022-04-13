@@ -23,7 +23,7 @@ const StoreProvider = ({ children }) => {
         },
       };
 
-      const res = await axios.get("http://localhost:5000/api/v1/", config);
+      const res = await axios.get("/api/v1/", config);
 
       dispatch({ type: "GET_DATA", payload: res.data.data });
     } catch (err) {
@@ -47,7 +47,7 @@ const StoreProvider = ({ children }) => {
       };
 
       const res = await axios.post(
-        "http://localhost:5000/api/v1/card",
+        "/api/v1/card",
         data,
         config
       );
@@ -78,7 +78,7 @@ const StoreProvider = ({ children }) => {
       };
 
       const res = await axios.post(
-        "http://localhost:5000/api/v1/list",
+        "/api/v1/list",
         data,
         config
       );
@@ -109,7 +109,7 @@ const StoreProvider = ({ children }) => {
       };
 
       await axios.put(
-        `http://localhost:5000/api/v1/list/${listId}`,
+        `/api/v1/list/${listId}`,
         data,
         config
       );
@@ -129,7 +129,7 @@ const StoreProvider = ({ children }) => {
         },
       };
 
-      await axios.delete(`http://localhost:5000/api/v1/list/${listId}`, config);
+      await axios.delete(`/api/v1/list/${listId}`, config);
 
       dispatch({ type: "DELETE_LIST", payload: listId });
     } catch (err) {
@@ -150,7 +150,7 @@ const StoreProvider = ({ children }) => {
         },
       };
 
-      await axios.delete("http://localhost:5000/api/v1/card", config);
+      await axios.delete("/api/v1/card", config);
 
       dispatch({ type: "DELETE_CARD", payload: { cardId, listId } });
     } catch (err) {
@@ -176,7 +176,7 @@ const StoreProvider = ({ children }) => {
         },
       };
 
-      await axios.delete("http://localhost:5000/api/v1/card", config);
+      await axios.delete("/api/v1/card", config);
 
       const config1 = {
         headers: {
@@ -192,7 +192,7 @@ const StoreProvider = ({ children }) => {
       };
 
       const res = await axios.post(
-        "http://localhost:5000/api/v1/card",
+        "/api/v1/card",
         data,
         config1
       );
